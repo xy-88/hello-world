@@ -1,0 +1,82 @@
+#include <regex>
+#include <iostream>
+#include <string>
+#include <iterator>
+#include<regex>
+
+using namespace std;
+
+int level(string dz)    //判断级别
+{
+	int a = dz[0]-'0';
+	return a;
+}
+
+string dz1(string dz)      //提取级别后的地址
+{
+	regex r("\\d{1}!");
+	dz = regex_replace(dz, r, "");
+	return dz;
+}
+
+string number(string dz)      //提取11位电话
+{
+	smatch result;
+	regex r("\\d{11}");
+	regex_search(dz,result,r);
+	string number = result.str();
+	return number;
+}
+
+string dz2(string dz)      //提取11位电话后的地址
+{
+	regex r("\\d{11}");
+	dz = regex_replace(dz, r, "");
+	return dz;
+}
+
+string name(string dz)      //提取姓名
+{
+	string name;
+	int a=dz.find(',');
+	name = dz.substr(0,a);
+	return name;
+}
+
+string sheng(string dz)      //匹配省
+{
+	regex pattern(",(.*?省[^.]).");
+	smatch result;
+	regex_match(dz, result, pattern);
+	string sheng = result.str();
+	return sheng;
+}
+
+int main()
+{
+	int level(string dz);
+	string dz1(string dz);
+	string number(string dz);
+	string dz2(string dz);
+	//string sheng(string dz);
+	string addr;
+	getline(cin, addr);
+	/*if (level(addr) == 1)
+	{
+
+	}
+	else
+	{
+
+	}*/
+	cout << level(addr) << endl;
+	addr = dz1(addr);
+	cout << addr << endl;
+	cout << name(addr) << endl;
+	cout << number(addr) << endl;
+	addr = dz2(addr);
+	cout << addr << endl;
+	//cout << sheng(addr) << endl;
+	getchar();
+	return 0;
+ }
