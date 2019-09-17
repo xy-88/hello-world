@@ -1,19 +1,59 @@
+ï»¿#include"json.h"
+#define _CRT_SECURE_NO_WARNINGS
+#include<cstdio>
+#include<cmath>
+#include<algorithm>
+#include<cstring>
+#include<string.h>
+#include<string>
+#include<queue>
+#include <locale>
+#include <codecvt>
 #include <regex>
 #include <iostream>
-#include <string>
 #include <iterator>
-#include<regex>
 #include <fstream>
+#include <cassert>
 
 using namespace std;
 
-int level(string dz)    //ÅĞ¶Ï¼¶±ğ
+void writeFileJson(string addr);
+
+string readTxt()       //è¯»å–txtæ–‡ä»¶
+{
+	ifstream infile;
+	infile.open("C://Users//ASUS//source//repos//æµ‹è¯•//æµ‹è¯•//1.txt", ios::in);   //å°†æ–‡ä»¶æµå¯¹è±¡ä¸æ–‡ä»¶è¿æ¥èµ·æ¥ 
+	assert(infile.is_open());   //è‹¥å¤±è´¥,åˆ™è¾“å‡ºé”™è¯¯æ¶ˆæ¯,å¹¶ç»ˆæ­¢ç¨‹åºè¿è¡Œ 
+	string s;
+	while (getline(infile, s))
+	{
+		cout << s << endl;
+	}
+	infile.close();
+	return s;
+}
+
+/*string UnicodeToUTF8(const wstring&s) {
+	string ret;
+	wstring_convert<codecvt_utf8<wchar_t> > wcv;
+	ret = wcv.to_bytes(s);
+	return ret;
+}
+
+wstring UTF8ToUnicode(const string &s) {
+	wstring ret;
+	wstring_convert<codecvt_utf8<wchar_t> > wcv;
+	ret = wcv.from_bytes(s);
+	return ret;
+}*/
+
+int level(string dz)    //åˆ¤æ–­çº§åˆ«
 {
 	int a = dz[0]-'0';
 	return a;
 }
 
-string dz1(string dz)      //ÌáÈ¡¼¶±ğºÍ¾äÄ©'.'ºóµÄµØÖ·
+string dz1(string dz)      //æå–çº§åˆ«å’Œå¥æœ«'.'åçš„åœ°å€
 {
 	regex r("\\d{1}!");
 	dz = regex_replace(dz, r, "");
@@ -22,7 +62,7 @@ string dz1(string dz)      //ÌáÈ¡¼¶±ğºÍ¾äÄ©'.'ºóµÄµØÖ·
 	return dz;
 }
 
-string number(string dz)      //ÌáÈ¡11Î»µç»°
+string number(string dz)      //æå–11ä½ç”µè¯
 {
 	smatch result;
 	regex r("\\d{11}");
@@ -31,14 +71,14 @@ string number(string dz)      //ÌáÈ¡11Î»µç»°
 	return number;
 }
 
-string dz2(string dz)      //ÌáÈ¡11Î»µç»°ºóµÄµØÖ·
+string dz2(string dz)      //æå–11ä½ç”µè¯åçš„åœ°å€
 {
 	regex r("\\d{11}");
 	dz = regex_replace(dz, r, "");
 	return dz;
 }
 
-string name(string dz)      //ÌáÈ¡ĞÕÃû
+string name(string dz)      //æå–å§“å
 {
 	string name;
 	int a=dz.find(',');
@@ -46,7 +86,7 @@ string name(string dz)      //ÌáÈ¡ĞÕÃû
 	return name;
 }
 
-string dz3(string dz)      //É¾³ıĞÕÃûºÍ¡°£¬¡±
+string dz3(string dz)      //åˆ é™¤å§“åå’Œâ€œï¼Œâ€
 {
 	string name;
 	int a = dz.find(',');
@@ -56,171 +96,173 @@ string dz3(string dz)      //É¾³ıĞÕÃûºÍ¡°£¬¡±
 	return dz;
 }
 
-string sheng(string dz)      //Æ¥ÅäÊ¡
+string sheng(string dz)      //åŒ¹é…çœ
 {
 	string sheng;
-	if (dz.find('Áú')!= -1)
+	if (dz.find('é¾™')!= -1)
 		sheng = dz.substr(0,6);
-	else if (dz.find('Ê¡') == -1)
+	else if (dz.find('çœ') == -1)
 		sheng = dz.substr(0,4);
 	else
 	{
-		int a = dz.find('Ê¡');
+		int a = dz.find('çœ');
 		sheng = dz.substr(0, a);
 	}
 	return sheng;
 }
 
-string dz4(string dz)      //É¾³ıÊ¡·İ
+string dz4(string dz)      //åˆ é™¤çœä»½
 {
 	string s = sheng(dz);
 	int a = s.length();
-	if (dz.find('Ê¡') == -1)
-		dz=dz.erase(0, a);     //Ö»ÒªÉ¾aÎ»
+	if (dz.find('çœ') == -1)
+		dz=dz.erase(0, a);     //åªè¦åˆ aä½
 	else
 		dz=dz.erase(0,a+1);
 	return dz;
 }
 
-string shi(string dz)      //Æ¥ÅäÊĞ
+string shi(string dz)      //åŒ¹é…å¸‚
 {
 	string shi;
-	if (dz.find('ÊĞ') == -1)
+	if (dz.find('å¸‚') == -1)
 		shi = dz.substr(0,4);
 	else
 	{
-		int b = dz.find('ÊĞ');
+		int b = dz.find('å¸‚');
 		shi = dz.substr(0,b);
 	}
 	return shi;
 }
 
-string dz5(string dz)      //É¾³ıÊĞ
+string dz5(string dz)      //åˆ é™¤å¸‚
 {
 	string s = shi(dz);
 	int a = s.length();
-	if (dz.find('ÊĞ') == -1)
+	if (dz.find('å¸‚') == -1)
 		dz = dz.erase(0,a);         
 	else
 		dz = dz.erase(0,a+1);
 	return dz;
 }
 
-string	qx(string dz)      //Æ¥ÅäÇø»òÏØ
+string	qx(string dz)      //åŒ¹é…åŒºæˆ–å¿
 {
 	smatch result;
-	regex r("^.+(Çø|ÏØ)");
+	regex r("^.+(åŒº|å¿)");
 	regex_search(dz, result, r);
 	string qx = result.str();
 	/*string qx;
 	int b=0;
-	if(dz.find('Çø') != -1)
+	if(dz.find('åŒº') != -1)
 	{
-		b = dz.find('Çø');
+		b = dz.find('åŒº');
 		qx = dz.substr(0, b+1);
 	}
 	else
 	{
-		b = dz.find('ÏØ');
+		b = dz.find('å¿');
 		qx = dz.substr(0, b+1);
 	}*/
 	return qx;
 }
 
-string dz6(string dz)      //ÌáÈ¡Çø|ÏØºóµÄµØÖ·
+string dz6(string dz)      //æå–åŒº|å¿åçš„åœ°å€
 {
-	regex r("^.+(Çø|ÏØ)");
+	regex r("^.+(åŒº|å¿)");
 	dz = regex_replace(dz, r, "");
 	return dz;
 }
 
-string jzx(string dz)      //Æ¥Åä½ÖµÀ|Õò|Ïç
+string jzx(string dz)      //åŒ¹é…è¡—é“|é•‡|ä¹¡
 {
 	smatch result;
-	regex r("^.+((½ÖµÀ)|Õò|Ïç)");
+	regex r("^.+((è¡—é“)|é•‡|ä¹¡)");
 	regex_search(dz, result, r);
 	string jzx = result.str();
 	return jzx;
 }
 
-string dz7(string dz)      //ÌáÈ¡½ÖµÀ|Õò|ÏçºóµÄµØÖ·
+string dz7(string dz)      //æå–è¡—é“|é•‡|ä¹¡åçš„åœ°å€
 {
-	regex r("^.+((½ÖµÀ)|Õò|Ïç)");
+	regex r("^.+((è¡—é“)|é•‡|ä¹¡)");
 	dz = regex_replace(dz, r, "");
 	return dz;
 }
 
-string lu(string dz)      //Æ¥ÅäÂ·
+      //ä¸ƒçº§åœ°å€æ‰€éœ€
+string lu(string dz)      //åŒ¹é…è·¯
 {
 	smatch result;
-	regex r("^.+Â·");
+	regex r("^.+è·¯");
 	regex_search(dz, result, r);
 	string lu = result.str();
 	return lu;
 }
 
-string dz8(string dz)      //ÌáÈ¡Â·ºóµÄµØÖ·
+string dz8(string dz)      //æå–è·¯åçš„åœ°å€
 {
-	regex r("^.+Â·");
+	regex r("^.+è·¯");
 	dz = regex_replace(dz, r, "");
 	return dz;
 }
 
-string door(string dz)      //Æ¥ÅäÃÅÅÆºÅ
+string door(string dz)      //åŒ¹é…é—¨ç‰Œå·
 {
 	smatch result;
-	regex r("^.+ºÅ");
+	regex r("^.+å·");
 	regex_search(dz, result, r);
 	string door = result.str();
 	return door;
 }
 
-string dz9(string dz)      //ÌáÈ¡ÃÅÅÆºÅºóµÄµØÖ·
+string dz9(string dz)      //æå–é—¨ç‰Œå·åçš„åœ°å€
 {
-	regex r("^.+ºÅ");
+	regex r("^.+å·");
 	dz = regex_replace(dz, r, "");
 	return dz;
+}
+
+void writeFileJson(string addr)
+{
+	//æ ¹èŠ‚ç‚¹
+	Json::Value root;
+	//æ ¹èŠ‚ç‚¹å±æ€§
+	string addr1 = dz1(addr);
+	string addr2 = dz2(addr1);
+	string addr3 = dz3(addr2);
+	string addr4 = dz4(addr3);
+	string addr5 = dz5(addr4);
+	string addr6 = dz6(addr5);
+	string addr7 = dz7(addr6);
+	//å­èŠ‚ç‚¹
+	root["ç”µè¯"] = Json::Value(number(addr1));
+	root["å§“å"] = Json::Value(name(addr2));
+	//æ•°ç»„å½¢å¼
+	root["åœ°å€"].append(sheng(addr3));  
+	root["åœ°å€"].append(shi(addr4));   
+	root["åœ°å€"].append(qx(addr5));    cout << endl;
+	root["åœ°å€"].append(jzx(addr6));   cout << endl;
+	root["åœ°å€"].append(addr7);
+	//ç¼©è¿›è¾“å‡º
+	cout << "" << endl;
+	Json::StyledWriter sw;
+	cout << sw.write(root) << endl << endl;
+	//è¾“å‡ºåˆ°æ–‡ä»¶
+	ofstream os;
+	os.open("2.txt");
+	os << sw.write(root);
+	os.close();
+
 }
 
 int main()
 {
 	string addr;
-	getline(cin, addr);
-	string a, b, c, d, e, f, g;
-	/*if (level(addr) == 1)
-	{
-		
-	}
-	else
-	{
-
-	}*/
-	addr = dz1(addr);
-	cout << name(addr) << endl;
-	cout << number(addr) << endl;
-	addr = dz2(addr);
-	cout << addr << endl;
-	addr = dz3(addr);
-	cout << addr << endl;
-	cout << sheng(addr) << endl;
-	addr = dz4(addr);
-	cout << addr << endl;
-	cout << shi(addr) << endl;
-	addr = dz5(addr);
-	cout << addr << endl;
-	cout << qx(addr) << endl;
-	addr = dz6(addr);
-	cout << addr << endl;
-	cout << jzx(addr) << endl;
-	addr = dz7(addr);
-	cout << addr << endl;
-	cout << lu(addr) << endl;
-	addr = dz8(addr);
-	cout << addr << endl;
-	cout << door(addr) << endl;
-	addr = dz9(addr);
-	cout << addr << endl;
-
+	addr = readTxt();
+	writeFileJson(addr);
 	getchar();
 	return 0;
  }
+
+
